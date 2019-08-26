@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 	*/
 
 
-	string circ_file= io_dir+"test_file.txt";
+	string circ_file= io_dir+"DNA_MATCHING_CIRCUIT.txt";
 
 	CircuitFile cf(circ_file.c_str());      //Creating CircuitFile obj with our custom circuit
 

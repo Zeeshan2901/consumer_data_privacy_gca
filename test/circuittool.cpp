@@ -21,27 +21,12 @@ int main(int argc, char** argv) {
 	NetIO* io = new NetIO(party==ALICE ? nullptr:IP, port); // TODO find some way to pass the IP!!!
 	io->set_nodelay();
 	
-	/*string file = "adder_32bit.txt";
-	string file_name= circuit_file_location + file;
-	*/
-
-
-	/*
-	cout<<"argv : "<<*argv<<"\n";
-        cout<<"argc : "<<argc<<"\n";
-        cout<<"party : "<<party<<"\n";
-        cout<<"port : "<<port<<"\n";
-
-	for (int i = 0; i < argc; i++) 
-        	cout << "\narg["<<i<<"] : "<< argv[i] ; 
-	*/
-
 
 	string circ_file= io_dir+"DNA_MATCHING_CIRCUIT.txt";
 
 	CircuitFile cf(circ_file.c_str());      //Creating CircuitFile obj with our custom circuit
 
-	auto t1 = clock_start();
+	//auto t1 = clock_start();
 	C2PC twopc(io, party, &cf);
 	twopc.function_independent();
 	twopc.function_dependent();
@@ -62,7 +47,7 @@ int main(int argc, char** argv) {
         twopc.online(in,out);
 	i1.close();
 
-	cout << endl<<circ_file <<"\t"<<time_from(t1)<<endl;
+	//cout << endl<<circ_file <<"\t"<<time_from(t1)<<endl;
 
 	string output = io_dir + "out_party_" + to_string(party) + ".txt";
 	ofstream output_1 (output);
@@ -74,17 +59,22 @@ int main(int argc, char** argv) {
 	}
 	else cout<<"Unable to Write into file !!!";
 	
-	cout<<"\n\n\n \t\t Data for Party : "<< party;
-	cout<<"\nInput Length : "<<input_len;
-	cout<<"\nInput File : "<<input_file;
-	cout<<"\nInput Contents \n";
+	//cout<<"\n\n\n \t\t Data for Party : "<< party;
+	//cout<<"\nInput Length : "<<input_len;
+	//cout<<"\nInput File : "<<input_file;
+	cout<<"\nInput  ";
 	for (i=0; i<input_len; i++)
 		cout<<"\t"<<in[i];
-	cout<<"\nOutput Contents \n";
+	
+	
+	if (party==2){
+	cout<<"\nOutput  ";
+	
 	for(i=0; i<cf.n3; i++)
 		cout<<"\t"<<out[i];
-	cout<<"\n\nOutput_file : "<<output<<"\n\n";
-	
+	//cout<<"\n\nOutput_file : "<<output<<"\n\n";
+	}
+
 	delete io;
 	return 0;
 

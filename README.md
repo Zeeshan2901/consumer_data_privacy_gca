@@ -1,7 +1,7 @@
 # consumer_data_privacy_gca
 
 
-#The Garbled Circuit Approach
+# The Garbled Circuit Approach
 
 
 

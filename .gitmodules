@@ -1,0 +1,12 @@
+[submodule "dependencies/emp-tool"]
+	path = dependencies/emp-tool
+	url = https://github.com/emp-toolkit/emp-tool
+[submodule "dependencies/emp-ag2pc"]
+	path = dependencies/emp-ag2pc
+	url = https://github.com/emp-toolkit/emp-ag2pc/
+[submodule "dependencies/emp-ot"]
+	path = dependencies/emp-ot
+	url = https://github.com/emp-toolkit/emp-ot
+[submodule "dependencies/relic"]
+	path = dependencies/relic
+	url = https://github.com/relic-toolkit/relic.git

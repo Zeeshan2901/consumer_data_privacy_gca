@@ -1,8 +1,9 @@
 # consumer_data_privacy_gca
 
 
+#The Garbled Circuit Approach
 
-# consumer-dna-privacy
+
 
 Related overleaf document:
 https://www.overleaf.com/project/5c2ff8405c17106274d0b564

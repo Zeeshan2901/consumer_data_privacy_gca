@@ -22,11 +22,11 @@ int main(int argc, char** argv) {
 	io->set_nodelay();
 	
 
-	string circ_file= io_dir+"DNA_MATCHING_CIRCUIT.txt";
+	string circ_file= io_dir+"Adders.txt";
 
 	CircuitFile cf(circ_file.c_str());      //Creating CircuitFile obj with our custom circuit
 
-	//auto t1 = clock_start();
+	auto t1 = clock_start();
 	C2PC twopc(io, party, &cf);
 	twopc.function_independent();
 	twopc.function_dependent();
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
         twopc.online(in,out);
 	i1.close();
 
-	//cout << endl<<circ_file <<"\t"<<time_from(t1)<<endl;
+	cout << endl<<circ_file <<"\t"<<time_from(t1)<<endl;
 
 	string output = io_dir + "out_party_" + to_string(party) + ".txt";
 	ofstream output_1 (output);
@@ -62,15 +62,15 @@ int main(int argc, char** argv) {
 	//cout<<"\n\n\n \t\t Data for Party : "<< party;
 	//cout<<"\nInput Length : "<<input_len;
 	//cout<<"\nInput File : "<<input_file;
-	cout<<"\nInput  ";
+	cout<<"\nInput ";
 	for (i=0; i<input_len; i++)
 		cout<<"\t"<<in[i];
 	
 	
 	if (party==2){
-	cout<<"\nOutput  ";
+	cout<<"\nOutput ";
 	
-	for(i=0; i<cf.n3; i++)
+	for(i=cf.n3-1; i>=0; i--)
 		cout<<"\t"<<out[i];
 	//cout<<"\n\nOutput_file : "<<output<<"\n\n";
 	}

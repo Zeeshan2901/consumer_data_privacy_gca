@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	io->set_nodelay();
 	
 
-	string circ_file= io_dir+"Adders.txt";
+	string circ_file= io_dir+"HALF_ADDER.txt";
 
 	CircuitFile cf(circ_file.c_str());      //Creating CircuitFile obj with our custom circuit
 
@@ -70,7 +70,7 @@ int main(int argc, char** argv) {
 	if (party==2){
 	cout<<"\nOutput ";
 	
-	for(i=cf.n3-1; i>=0; i--)
+	for(i=0; i<cf.n3; i++)
 		cout<<"\t"<<out[i];
 	//cout<<"\n\nOutput_file : "<<output<<"\n\n";
 	}

@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	io->set_nodelay();
 	
 
-	string circ_file= io_dir+"HALF_ADDER.txt";
+	string circ_file= io_dir+"ands.txt";
 
 	CircuitFile cf(circ_file.c_str());      //Creating CircuitFile obj with our custom circuit
 

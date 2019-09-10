@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	io->set_nodelay();
 	
 
-	string circ_file= io_dir+"ands.txt";
+	string circ_file= io_dir+"FULL-ADDER.txt";
 
 	CircuitFile cf(circ_file.c_str());      //Creating CircuitFile obj with our custom circuit
 
@@ -30,11 +30,15 @@ int main(int argc, char** argv) {
 	C2PC twopc(io, party, &cf);
 	twopc.function_independent();
 	twopc.function_dependent();
-	
+
+
 	int i;
+	
 	int input_len = (party == ALICE) ? cf.n1 : cf.n2 ; 
+	
 	bool in[input_len];
 	bool out[cf.n3];
+	/*
 	string input_file = io_dir + "input_party_" + to_string(party) + ".txt";
 	string line;
 	ifstream i1 (input_file);
@@ -44,11 +48,18 @@ int main(int argc, char** argv) {
                        in[i]=atoi(line.c_str());
                }
         }
+*/
+
+	cout<<"\n\n\t\tMemory!!";
+	memset(in, false, input_len);
+	memset(out, false, cf.n3);
+
         twopc.online(in,out);
-	i1.close();
+	//i1.close();
+	cout<<"\n\n\t\tONLINE";
 
 	cout << endl<<circ_file <<"\t"<<time_from(t1)<<endl;
-
+	
 	string output = io_dir + "out_party_" + to_string(party) + ".txt";
 	ofstream output_1 (output);
 	if (output_1.is_open()){  // Put output data into file

@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	io->set_nodelay();
 	
 
-	string circ_file= io_dir+"FULL-ADDER.txt";
+	string circ_file= io_dir+"ands.txt";
 
 	CircuitFile cf(circ_file.c_str());      //Creating CircuitFile obj with our custom circuit
 
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 	
 	bool in[input_len];
 	bool out[cf.n3];
-	/*
+	
 	string input_file = io_dir + "input_party_" + to_string(party) + ".txt";
 	string line;
 	ifstream i1 (input_file);
@@ -48,15 +48,15 @@ int main(int argc, char** argv) {
                        in[i]=atoi(line.c_str());
                }
         }
-*/
 
-	cout<<"\n\n\t\tMemory!!";
-	memset(in, false, input_len);
-	memset(out, false, cf.n3);
+
+	//memset(in, false, input_len);
+	//memset(out, false, cf.n3);
+	
+	
 
         twopc.online(in,out);
-	//i1.close();
-	cout<<"\n\n\t\tONLINE";
+	i1.close();
 
 	cout << endl<<circ_file <<"\t"<<time_from(t1)<<endl;
 	
@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
 	cout<<"\nOutput ";
 	
 	for(i=0; i<cf.n3; i++)
-		cout<<"\t"<<out[i];
+		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
 	//cout<<"\n\nOutput_file : "<<output<<"\n\n";
 	}
 

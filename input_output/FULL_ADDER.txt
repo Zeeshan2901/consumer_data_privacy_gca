@@ -4,6 +4,7 @@
 1 1 0 2 INV
 2 1 0 2 3 AND
 
+
 2 1 0 1 4 XOR
 2 1 0 1 5 AND
 1 1 5 6  INV
@@ -26,3 +27,11 @@
 9 = 6 & 8
 10 = 9`
 11 = cin xor a xor b
+
+
+nBitAdder: 5
+MSB : []
+LSB : []			0     1     2    3    4	
+		 Inter: 	[331, 339, 347, 355, 354, 315, 323, 322, 258, 267, 275, 274, 209, 208, 211, 210]
+ Wires 356 Gates 290
+Status of Queue

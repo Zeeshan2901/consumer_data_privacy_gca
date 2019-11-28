@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 	io->set_nodelay();
 	
 
-	string circ_file= io_dir+"ands.txt";
+	string circ_file= io_dir+"frame_circuit.txt";
 
 	CircuitFile cf(circ_file.c_str());      //Creating CircuitFile obj with our custom circuit
 
@@ -59,7 +59,8 @@ int main(int argc, char** argv) {
 	i1.close();
 
 	cout << endl<<circ_file <<"\t"<<time_from(t1)<<endl;
-	
+
+	//cout<<"time in secs"<<"\t"<<t1/CLOCKS_PER_SEC<<" sec";	
 	string output = io_dir + "out_party_" + to_string(party) + ".txt";
 	ofstream output_1 (output);
 	if (output_1.is_open()){  // Put output data into file
@@ -73,17 +74,41 @@ int main(int argc, char** argv) {
 	//cout<<"\n\n\n \t\t Data for Party : "<< party;
 	//cout<<"\nInput Length : "<<input_len;
 	//cout<<"\nInput File : "<<input_file;
-	cout<<"\nInput ";
-	for (i=0; i<input_len; i++)
-		cout<<"\t"<<in[i];
+	//cout<<"\nInput ";
+	//for (i=0; i<input_len; i++)
+	//	cout<<"\t"<<in[i];
 	
 	
 	if (party==2){
 	cout<<"\nOutput ";
-	
-	for(i=0; i<cf.n3; i++)
+	cout<<"\n DNA Matching outputs ***************";
+	cout<<"\nFor 700 inputs***";
+	for(i=4209; i<=9801; i+=8){
 		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
+	}
+	cout<<"For Fabricated inputs ***";
+	for (i=9809;i<=12393; i+=8){
+		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
+	}
+	cout<<"Half Adder Outputs";
+	for (i=12394;i<=13417;i++){
+		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
+	}
+	cout<<"\nFull Adder Outputs";
+	for(i=13424;i<=25609;i+=8){
+		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
+		cout<<"\t"<<i+1<<" : "<<out[i+1]<<"\n";
+	}
+	cout<<"Final Adder Output:";
+	for(i=25537;i<=25609;i+=8){
+		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
+	}
+	cout<<"\t"<<"25608"<<" : "<<out[25608]<<"\n";
 	//cout<<"\n\nOutput_file : "<<output<<"\n\n";
+	cout<<"less than t2 outputs :";
+	for (i=25610;i<=25630;i++)
+		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
+	
 	}
 
 	delete io;

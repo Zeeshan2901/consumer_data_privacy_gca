@@ -1,0 +1,1 @@
+/usr/bin/c++  -pthread -Wall -march=native -O3 -maes -mrdseed -std=c++11 -O3 -DNDEBUG  -rdynamic CMakeFiles/final.dir/test/final.cpp.o  -o bin/final -Wl,-rpath,/usr/local/lib /usr/local/lib/librelic.so -lssl -lcrypto -lboost_system -lgmp /usr/local/lib/libemp-tool.so 

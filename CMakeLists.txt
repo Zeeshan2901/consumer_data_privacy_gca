@@ -20,3 +20,4 @@ macro (add_test _name)
 endmacro()
 
 add_test(circuittool)
+add_test(final)

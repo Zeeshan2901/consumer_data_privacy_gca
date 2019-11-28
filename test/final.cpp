@@ -28,88 +28,104 @@ int main(int argc, char** argv) {
 	string list_file = input_dir + "list_of_files_USER" + to_string(party) + ".txt";
         string individualFrames,data,data1,new1;
 
-	//creating input stream to read file
+	
+
+	//creating input stream to read file the list file
         ifstream i1; 
 	i1.open(list_file);
 
 	//temp string to hold first part of the absolute location of the file
 	string temp= input_dir + "User" + to_string(party) + "_";
 	int t= temp.length();
-	
-	
-		 
+
 	int counter=0;
+	cout<<"Party\t"<<party<<"\tStart";
+	ifstream frameFile;
 	//Reading each filename from the list of frame files
         while ( i1 >> individualFrames ){
-		
+
 		//creating input stream to read frame file from the filename location
-		ifstream frameFile; 
+		 
 		frameFile.open(individualFrames);
-		
+		cout<<"\n****"<<individualFrames<<"****\n";
 		
 		//Capturing the frame attributes from the filename
-		int fLength=individualFrames.length();
-		data = individualFrames.substr(t,(fLength-t));
-		data1=data;
-		new1=data.erase((data.length()-4),4);
+		//int fLength=individualFrames.length();
+		data = individualFrames.substr(t,(individualFrames.length()-t));
+		data.erase((data.length()-4),4);
+
+		counter+=1;
 		
-		counter++;
-		cout<<"\n"<<counter<<"\t Step 1";
 		/*
-		if (counter==100){
+		if (counter%100==0){
 			cout<<"\n"<<"Party\t"<<party<<"\tI : "<<counter<<" "<<individualFrames;
-			cout<<"\n"<<"Party\t"<<party<<"\tS : "<<counter<<" "<<data1;
-			cout<<"\n"<<"Party\t"<<party<<"\tN : "<<counter<<" "<<new1;
-		}
-		*/
-			
-		//Variables to capture the frame attributes
-		string chromosome,cm,geneCount;
-		string delimiter = "_";
-		//loop to traverse the string to split into tokens and finding frame attributes
-		int pos = 0;
-		int count=0;
-		while ( (unsigned)(pos = new1.find(delimiter)) != std::string::npos) {
-			count++;			
-			if (count==1)
-				chromosome = new1.substr(0, pos);
-			else
-				cm= new1.substr(0, pos);
-			new1.erase(0, pos + delimiter.length());
-		}
-		geneCount=new1;
-		cout<<"\n"<<counter<<"\t Step 2";
-		/*
-		if (counter==100){
-			cout<<"\n"<<"Party\t"<<party<<"\tC : "<<counter<<" "<<chromosome;
-			cout<<"\n"<<"Party\t"<<party<<"\tM : "<<counter<<" "<<cm;
-			cout<<"\n"<<"Party\t"<<party<<"\tG : "<<counter<<" "<<geneCount;
-		}
-		*/
+			cout<<"\n"<<"Party\t"<<party<<"\tN : "<<counter<<" "<<data;
+		}*/
+		
+
+
+
 
 		
-		cout<<"\n"<<counter<<"\t Step 3";
+		
+		
+		//Variables to capture the frame attributes
+		string chromosome="",cm="",geneCount="";
+		string delimiter = "_";
+		int delims=0;
+		string temp2="";
+		//loop to traverse the string to split into tokens and finding frame attributes
+		for (int i=0; (unsigned)i<data.size();i++){
+			//cout<<data[i];
+			if (data[i]=='_'){
+				delims++;
+				if (delims==1)
+					chromosome =temp2;
+				else
+					cm=temp2;
+				temp2="";
+			} else
+				temp2 = temp2 + data[i];		
+		}
+		geneCount=temp2;
+
+		//cout<<"\n"<<counter<<"\t Step 2";
+		
+		
+		cout<<"\n"<<"Party\t"<<party<<"\tC : "<<counter<<" "<<chromosome<<"\n";
+		cout<<"\n"<<"Party\t"<<party<<"\tM : "<<counter<<" "<<cm<<"\n";
+		cout<<"\n"<<"Party\t"<<party<<"\tG : "<<counter<<" "<<geneCount<<"\n";
+		
+
+
+
 		//Creating CircuitFile obj with our custom circuit
 		string circ_file= input_dir+"circuit_"+geneCount+".txt";
         	CircuitFile cf(circ_file.c_str());      
-		cout<<"\n"<<counter<<"\t Step 4";
-		cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<circ_file;
-		cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<individualFrames;
-		
+
+		//cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<circ_file;
+		//cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<individualFrames;
+
 		//Calling necessary AG2PC Library functions		
-		//C2PC twopc(io, party, &cf);
-		//twopc.function_independent();
-		//twopc.function_dependent();
-		
-		cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<circ_file;
-		cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<individualFrames;
+		C2PC twopc(io, party, &cf);
+		io->flush();
+		twopc.function_independent();
+		cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<"Independent";
+		//io->flush();
+		twopc.function_dependent();
+		//io->flush();
+		cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<"Dependent";
+
 		
 		//Creating input and outpt array variables
 		int input_len = (party == ALICE) ? cf.n1 : cf.n2 ;
 		bool in[input_len];
 		bool out[cf.n3];
 		string line;
+
+		cout<<"\n"<<party<<"  : Genotypes : "<<geneCount<<"\t Array Count "<<input_len;
 		
+		//cout<<"\nReading Input File Started !!"<<counter;
 		//Reading the input data file of genotypes and puttig into an array 
 		if (frameFile.is_open()){
 			for(int i=0; i<input_len; i++){
@@ -117,28 +133,27 @@ int main(int argc, char** argv) {
 				in[i]=atoi(line.c_str());
 			}
 		}
-		frameFile.close();
-		//twopc.online(in,out);
-
-		cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<circ_file;
-		cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<individualFrames;
 		
+		
+
+		cout<<"\nCalling Online Function : "<<counter<<"\n";
+		twopc.online(in,out);
+		cout<<"\nOnline Function Executed: "<<counter<<"\n";
 		if (party==2){
 			for (int i=0; (unsigned)i<sizeof(out); i++){
                         	if (out[i]==0)
-					cout<<"Chromosome\t"<<chromosome<<"\tCM\t"<<cm<<"-"<<(cm)<<"\twith count\t"<<geneCount<<"\tis XXXXXXX";
+					cout<<"\n****Chromosome\t"<<chromosome<<"\tCM\t"<<cm<<"-"<<atoi(cm.c_str())+5<<"\twith count\t"<<geneCount<<"\tis XXXXXXX****\n";
 				else
-					cout<<"Chromosome\t"<<chromosome<<"\tCM\t"<<cm<<"-"<<(cm)<<"\twith count\t"<<geneCount<<"\tis a Match";
-		}
-		}            
-               
-        }
+					cout<<"\n****Chromosome\t"<<chromosome<<"\tCM\t"<<cm<<"-"<<atoi(cm.c_str())+5<<"\twith count\t"<<geneCount<<"\tis a Match****\n";
+			}
+		}  
 
-	
-	
-	
+		io->flush();
+		frameFile.close();
+			
+        }
+	cout<<"Party\t"<<party<<"\tEnd";
 	i1.close();
 	delete io;
 	return 0;
-	
 }

@@ -182,6 +182,46 @@ circuittool/fast:
 	$(MAKE) -f CMakeFiles/circuittool.dir/build.make CMakeFiles/circuittool.dir/build
 .PHONY : circuittool/fast
 
+#=============================================================================
+# Target rules for targets named Frame_Match
+
+# Build rule for target.
+Frame_Match: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Frame_Match
+.PHONY : Frame_Match
+
+# fast build rule for target.
+Frame_Match/fast:
+	$(MAKE) -f CMakeFiles/Frame_Match.dir/build.make CMakeFiles/Frame_Match.dir/build
+.PHONY : Frame_Match/fast
+
+test/Frame_Match.o: test/Frame_Match.cpp.o
+
+.PHONY : test/Frame_Match.o
+
+# target to build an object file
+test/Frame_Match.cpp.o:
+	$(MAKE) -f CMakeFiles/Frame_Match.dir/build.make CMakeFiles/Frame_Match.dir/test/Frame_Match.cpp.o
+.PHONY : test/Frame_Match.cpp.o
+
+test/Frame_Match.i: test/Frame_Match.cpp.i
+
+.PHONY : test/Frame_Match.i
+
+# target to preprocess a source file
+test/Frame_Match.cpp.i:
+	$(MAKE) -f CMakeFiles/Frame_Match.dir/build.make CMakeFiles/Frame_Match.dir/test/Frame_Match.cpp.i
+.PHONY : test/Frame_Match.cpp.i
+
+test/Frame_Match.s: test/Frame_Match.cpp.s
+
+.PHONY : test/Frame_Match.s
+
+# target to generate assembly for a file
+test/Frame_Match.cpp.s:
+	$(MAKE) -f CMakeFiles/Frame_Match.dir/build.make CMakeFiles/Frame_Match.dir/test/Frame_Match.cpp.s
+.PHONY : test/Frame_Match.cpp.s
+
 test/circuittool.o: test/circuittool.cpp.o
 
 .PHONY : test/circuittool.o
@@ -244,12 +284,16 @@ help:
 	@echo "... depend"
 	@echo "... install/strip"
 	@echo "... install/local"
-	@echo "... final"
 	@echo "... install"
+	@echo "... final"
 	@echo "... circuittool"
 	@echo "... rebuild_cache"
+	@echo "... Frame_Match"
 	@echo "... edit_cache"
 	@echo "... list_install_components"
+	@echo "... test/Frame_Match.o"
+	@echo "... test/Frame_Match.i"
+	@echo "... test/Frame_Match.s"
 	@echo "... test/circuittool.o"
 	@echo "... test/circuittool.i"
 	@echo "... test/circuittool.s"

@@ -21,3 +21,4 @@ endmacro()
 
 add_test(circuittool)
 add_test(final)
+add_test(Frame_Match)

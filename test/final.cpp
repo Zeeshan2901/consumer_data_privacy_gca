@@ -5,6 +5,37 @@
 using namespace std;
 using namespace emp;
 
+int executeCircuit(bool * input, bool * output, string location, NetIO * io, int party){
+
+	//Creating CircuitFile obj with our custom circuit
+	CircuitFile cf(location.c_str());      
+
+	cout<<"\n****Party\t"<<party<<"\t"<<location<<"****\n";
+
+	//Calling necessary AG2PC Library functions		
+	C2PC twopc(io, party, &cf);
+	io->flush();
+	twopc.function_independent();
+	cout<<"\n"<<"Party\t"<<party<<"\t"<<"Independent\n";
+	io->flush();
+	twopc.function_dependent();
+	io->flush();
+	cout<<"\n"<<"Party\t"<<party<<"\t"<<"Dependent\n";
+
+	//Function that executes the circuit with in input array
+	cout<<"\nParty\t"<<party<<"\tCalling Online Function : "<<"\n";
+	twopc.online(input,output);
+	cout<<"\nParty\t"<<party<<"\tOnline Function Executed: "<<"\n";
+
+	if (party==1)
+		sleep(1);
+	if (party == 2 && output[0]==1)
+		return 1;
+	else
+		return 0;
+
+}
+
 const string circuit_file_location = macro_xstr(EMP_CIRCUIT_PATH);
 int main(int argc, char** argv) {
 
@@ -16,13 +47,14 @@ int main(int argc, char** argv) {
 	string input_dir="/home/zeeshan/Desktop/hashing_based/temp_dir/";
 
 	/*
-	 *Code to create the networking connection between users 
+	*Code to create the networking connection between users 
 	*/
 	int port, party;
 	parse_party_and_port(argv, &party, &port);
 	//nullptr to connect to localhost; pass IP to connect to remote computers
 	NetIO* io = new NetIO(party==ALICE ? nullptr:IP, port); 
 	io->set_nodelay();
+	
 
 	//Reading the list_of_files_USER*.txt to process each frames
 	string list_file = input_dir + "list_of_files_USER" + to_string(party) + ".txt";
@@ -39,7 +71,7 @@ int main(int argc, char** argv) {
 	int t= temp.length();
 
 	int counter=0;
-	cout<<"Party\t"<<party<<"\tStart";
+	cout<<"\nParty\t"<<party<<"\tStart\n";
 	ifstream frameFile;
 	//Reading each filename from the list of frame files
         while ( i1 >> individualFrames ){
@@ -47,7 +79,7 @@ int main(int argc, char** argv) {
 		//creating input stream to read frame file from the filename location
 		 
 		frameFile.open(individualFrames);
-		cout<<"\n****"<<individualFrames<<"****\n";
+		//cout<<"\n****"<<individualFrames<<"****\n";
 		
 		//Capturing the frame attributes from the filename
 		//int fLength=individualFrames.length();
@@ -62,13 +94,7 @@ int main(int argc, char** argv) {
 			cout<<"\n"<<"Party\t"<<party<<"\tN : "<<counter<<" "<<data;
 		}*/
 		
-
-
-
-
-		
-		
-		
+	
 		//Variables to capture the frame attributes
 		string chromosome="",cm="",geneCount="";
 		string delimiter = "_";
@@ -99,34 +125,29 @@ int main(int argc, char** argv) {
 
 
 
-		//Creating CircuitFile obj with our custom circuit
+		
 		string circ_file= input_dir+"circuit_"+geneCount+".txt";
-        	CircuitFile cf(circ_file.c_str());      
+        	
 
-		//cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<circ_file;
-		//cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<individualFrames;
 
-		//Calling necessary AG2PC Library functions		
-		C2PC twopc(io, party, &cf);
-		io->flush();
-		twopc.function_independent();
-		cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<"Independent";
-		//io->flush();
-		twopc.function_dependent();
-		//io->flush();
-		cout<<"\n"<<"Party\t"<<party<<"\t"<<counter<<" "<<"Dependent";
 
+//Problem Starts Here
+
+
+		
+
+		
 		
 		//Creating input and outpt array variables
-		int input_len = (party == ALICE) ? cf.n1 : cf.n2 ;
+		int input_len = atoi(geneCount.c_str())*3 ;
 		bool in[input_len];
-		bool out[cf.n3];
+		bool out[1];
 		string line;
 
-		cout<<"\n"<<party<<"  : Genotypes : "<<geneCount<<"\t Array Count "<<input_len;
+		cout<<"\n"<<counter<<"  : Genotypes : "<<geneCount<<"\t Array Count "<<input_len;
 		
 		//cout<<"\nReading Input File Started !!"<<counter;
-		//Reading the input data file of genotypes and puttig into an array 
+		//Reading the input data file of genotypes and putting into an array 
 		if (frameFile.is_open()){
 			for(int i=0; i<input_len; i++){
 				getline(i1,line);
@@ -134,25 +155,22 @@ int main(int argc, char** argv) {
 			}
 		}
 		
+		int result = executeCircuit(in, out, circ_file , io, party);
 		
-
-		cout<<"\nCalling Online Function : "<<counter<<"\n";
-		twopc.online(in,out);
-		cout<<"\nOnline Function Executed: "<<counter<<"\n";
 		if (party==2){
-			for (int i=0; (unsigned)i<sizeof(out); i++){
-                        	if (out[i]==0)
-					cout<<"\n****Chromosome\t"<<chromosome<<"\tCM\t"<<cm<<"-"<<atoi(cm.c_str())+5<<"\twith count\t"<<geneCount<<"\tis XXXXXXX****\n";
-				else
-					cout<<"\n****Chromosome\t"<<chromosome<<"\tCM\t"<<cm<<"-"<<atoi(cm.c_str())+5<<"\twith count\t"<<geneCount<<"\tis a Match****\n";
-			}
-		}  
-
-		io->flush();
+                        if (result==0)
+				cout<<"\n****Chromosome\t"<<chromosome<<"\tCM\t"<<cm<<"-"<<atoi(cm.c_str())+5<<"\twith count\t"<<geneCount<<"\tis XXXXXXX****\n";
+			else
+				cout<<"\n****Chromosome\t"<<chromosome<<"\tCM\t"<<cm<<"-"<<atoi(cm.c_str())+5<<"\twith count\t"<<geneCount<<"\tis a Match****\n";
+		}
+		
+		 
+//Problem ends here
+		
 		frameFile.close();
 			
         }
-	cout<<"Party\t"<<party<<"\tEnd";
+	cout<<"\nParty\t"<<party<<"\tEnd\n";
 	i1.close();
 	delete io;
 	return 0;

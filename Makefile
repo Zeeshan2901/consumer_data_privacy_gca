@@ -80,6 +80,16 @@ install/local/fast: preinstall/fast
 	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
 .PHONY : install/local/fast
 
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+
+.PHONY : list_install_components/fast
+
 # Special rule for the target install
 install: preinstall
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
@@ -113,16 +123,6 @@ edit_cache:
 edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
-
-# Special rule for the target list_install_components
-list_install_components:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Available install components are: \"Unspecified\""
-.PHONY : list_install_components
-
-# Special rule for the target list_install_components
-list_install_components/fast: list_install_components
-
-.PHONY : list_install_components/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -195,6 +195,19 @@ Frame_Match/fast:
 	$(MAKE) -f CMakeFiles/Frame_Match.dir/build.make CMakeFiles/Frame_Match.dir/build
 .PHONY : Frame_Match/fast
 
+#=============================================================================
+# Target rules for targets named Frame_Match_V2
+
+# Build rule for target.
+Frame_Match_V2: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 Frame_Match_V2
+.PHONY : Frame_Match_V2
+
+# fast build rule for target.
+Frame_Match_V2/fast:
+	$(MAKE) -f CMakeFiles/Frame_Match_V2.dir/build.make CMakeFiles/Frame_Match_V2.dir/build
+.PHONY : Frame_Match_V2/fast
+
 test/Frame_Match.o: test/Frame_Match.cpp.o
 
 .PHONY : test/Frame_Match.o
@@ -221,6 +234,33 @@ test/Frame_Match.s: test/Frame_Match.cpp.s
 test/Frame_Match.cpp.s:
 	$(MAKE) -f CMakeFiles/Frame_Match.dir/build.make CMakeFiles/Frame_Match.dir/test/Frame_Match.cpp.s
 .PHONY : test/Frame_Match.cpp.s
+
+test/Frame_Match_V2.o: test/Frame_Match_V2.cpp.o
+
+.PHONY : test/Frame_Match_V2.o
+
+# target to build an object file
+test/Frame_Match_V2.cpp.o:
+	$(MAKE) -f CMakeFiles/Frame_Match_V2.dir/build.make CMakeFiles/Frame_Match_V2.dir/test/Frame_Match_V2.cpp.o
+.PHONY : test/Frame_Match_V2.cpp.o
+
+test/Frame_Match_V2.i: test/Frame_Match_V2.cpp.i
+
+.PHONY : test/Frame_Match_V2.i
+
+# target to preprocess a source file
+test/Frame_Match_V2.cpp.i:
+	$(MAKE) -f CMakeFiles/Frame_Match_V2.dir/build.make CMakeFiles/Frame_Match_V2.dir/test/Frame_Match_V2.cpp.i
+.PHONY : test/Frame_Match_V2.cpp.i
+
+test/Frame_Match_V2.s: test/Frame_Match_V2.cpp.s
+
+.PHONY : test/Frame_Match_V2.s
+
+# target to generate assembly for a file
+test/Frame_Match_V2.cpp.s:
+	$(MAKE) -f CMakeFiles/Frame_Match_V2.dir/build.make CMakeFiles/Frame_Match_V2.dir/test/Frame_Match_V2.cpp.s
+.PHONY : test/Frame_Match_V2.cpp.s
 
 test/circuittool.o: test/circuittool.cpp.o
 
@@ -284,16 +324,20 @@ help:
 	@echo "... depend"
 	@echo "... install/strip"
 	@echo "... install/local"
+	@echo "... list_install_components"
 	@echo "... install"
 	@echo "... final"
 	@echo "... circuittool"
-	@echo "... rebuild_cache"
 	@echo "... Frame_Match"
+	@echo "... rebuild_cache"
+	@echo "... Frame_Match_V2"
 	@echo "... edit_cache"
-	@echo "... list_install_components"
 	@echo "... test/Frame_Match.o"
 	@echo "... test/Frame_Match.i"
 	@echo "... test/Frame_Match.s"
+	@echo "... test/Frame_Match_V2.o"
+	@echo "... test/Frame_Match_V2.i"
+	@echo "... test/Frame_Match_V2.s"
 	@echo "... test/circuittool.o"
 	@echo "... test/circuittool.i"
 	@echo "... test/circuittool.s"

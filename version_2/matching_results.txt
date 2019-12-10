@@ -1,0 +1,11 @@
+Chr : 16 || GC : 1000 || CM : 70 is a Match
+Chr : 18 || GC : 1001 || CM : 106 is a Match
+Chr : 7 || GC : 1001 || CM : 82 is a Match
+Chr : 8 || GC : 1002 || CM : 49 is a Match
+Chr : 10 || GC : 1004 || CM : 30 is a Match
+Chr : 12 || GC : 1004 || CM : 105 is a Match
+Chr : 14 || GC : 1004 || CM : 16 is a Match
+Chr : 1 || GC : 1004 || CM : 255 is a Match
+Chr : 2 || GC : 1004 || CM : 93 is a Match
+Chr : 3 || GC : 1004 || CM : 21 is a Match
+Chr : 5 || GC : 1004 || CM : 173 is a Match

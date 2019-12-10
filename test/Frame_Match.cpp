@@ -23,10 +23,6 @@ int main(int argc, char** argv) {
 	//nullptr to connect to localhost; pass IP to connect to remote computers
 	NetIO* io = new NetIO(party==ALICE ? nullptr:IP, port);
 	io->set_nodelay();
-	
-
-	
-
 
 	/*
 	* Creating CircuitFile obj with our custom circuit
@@ -43,7 +39,7 @@ int main(int argc, char** argv) {
 	io->flush();
 	twopc.function_dependent();
 	io->flush();
-
+	
 	/*
 	*Creating input and output array variables
 	*/
@@ -73,14 +69,20 @@ int main(int argc, char** argv) {
 	i1.close();
 	delete io;	
 	
-	if (party == 2 && out[0]==1){
-		cout <<"\nFor Input FIle : "<<input_file <<" "" Its a Match !!!\n\n"	;	
-		return 1;
+	/*
+	* Writing Results of test
+	*/
+	if (party==2 && out[0]==1 ){
+		ofstream writeFile; 
+		writeFile.open("src/matching_results.txt" , std::ios_base::app);
+		writeFile <<"\n"<<input_file <<" : Match";
+		writeFile.close();
+	}else if (party == 2 && out[0]==0){
+		ofstream writeFile; 
+		writeFile.open("src/matching_results.txt" , std::ios_base::app);
+		writeFile <<"\n"<<input_file <<" : Nopes";
+		writeFile.close();
 	}
-	else if (party == 2 && out[0]==0)
-		cout <<"\nFor Input FIle : "<<input_file <<" Its a XXXXX !!!\n\n"	;
-	
-
 	return 0;
 
 }

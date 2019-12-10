@@ -44,15 +44,15 @@ public class User2 {
 	public User2() {
 		// TODO Auto-generated constructor stub
 		clientAddress="127.0.0.1"; 
-		port=5000;
+		port=12345;
 	
-		overlap=1;
+		overlap=5;
 		
 		genes  = new ArrayList[CHROMOSOME_COUNT+1]; 
 		exclusionList = new ArrayList[CHROMOSOME_COUNT+1];
 		readRejects = new ArrayList[CHROMOSOME_COUNT+1];
 	
-		location="input/son_all.txt";
+		location="input/sister_all.txt";
 		
 		chars.add('A');
 		chars.add('C');
@@ -123,7 +123,17 @@ public class User2 {
   		//Method Call to Find Common SNPs between users
   		findSnips();
   		
-  		
+  		//Block to close the connection 
+		try{ 
+			clientIn.close(); 
+			clientOut.close(); 
+			socket.close(); 
+			System.out.println("\tConnection closed !!!");
+		} catch(IOException i) { 
+			System.out.println(i); 
+		} 
+
+
   		for (int i=1;i<=CHROMOSOME_COUNT;i++)
   			System.out.println("Size of Chromosome "+i+" is "+genes[i].size());
   		
@@ -316,7 +326,7 @@ public class User2 {
 		
 		try {
 			//List of input file names
-			FileWriter flist = new FileWriter("input/User2/list_of_files_USER2.txt");
+			FileWriter flist = new FileWriter("input/User2/list_of_files_USER2.txt",true);
 			//iterating the outer array for each 22 chromosomes
 			for (int i =1 ; i<=CHROMOSOME_COUNT; i++) {
 				//System.out.println("Chromosome "+i);

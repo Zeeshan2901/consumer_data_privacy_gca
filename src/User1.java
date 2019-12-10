@@ -42,10 +42,10 @@ public class User1 {
 		
 	public User1() {
 		// TODO Auto-generated constructor stub
-		port = 5000;
-		location="input/sister_all.txt";
+		port = 12345;
+		location="input/dad_all.txt";
 
-		overlap=1;
+		overlap=5;
 		
 		genes			= new ArrayList[CHROMOSOME_COUNT+1];
 		exclusionList		= new ArrayList[CHROMOSOME_COUNT+1];
@@ -118,12 +118,25 @@ public class User1 {
 		
 		//Method Call to Find Common SNPs between users
 		findSnips();
+
+		// block to close connections
+		try {
+			socket.close();
+			server.close();
+			serverIn.close();
+			serverOut.close();
+			System.out.println("\tConnection closed !!!");
+		} catch (IOException i) {
+			System.out.println(i);
+		}
 		
 		for (int i=1;i<=CHROMOSOME_COUNT;i++)
   			System.out.println("Size of Chromosome "+i+" is "+genes[i].size());
 		
+		System.out.println("Set Frames Started");
 		//Method Call To Create Frames
 		setFrames();
+		System.out.println("Set Frames Ended");
 		
 	}
 		
@@ -325,7 +338,7 @@ public class User1 {
 	public void frameWithcM(int offset) {
 		
 		try {
-			FileWriter flist = new FileWriter("input/User1/list_of_files_USER1.txt");
+			FileWriter flist = new FileWriter("input/User1/list_of_files_USER1.txt",true);
 			//iterating the outer array for each 22 chromosomes
 			for (int i =1 ; i<=CHROMOSOME_COUNT; i++) {
 				//System.out.println("Chromosome "+i);

@@ -78,39 +78,49 @@ int main(int argc, char** argv) {
 	//for (i=0; i<input_len; i++)
 	//	cout<<"\t"<<in[i];
 	
+	if (party==2)
+		cout<<"\n\nResult : "<<out[0];
 	
+	/*
 	if (party==2){
 	cout<<"\nOutput ";
 	cout<<"\n DNA Matching outputs ***************";
 	cout<<"\nFor 700 inputs***";
-	for(i=4209; i<=9801; i+=8){
-		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
+	int count =0;
+	for(i=9369; i<=21841; i+=8){
+		cout<<"\t"<<count<<" : "<<out[i]<<"\n";
+		count++;
 	}
+	cout<<"Number of Outputs : "<<count;
+	count=0;
 	cout<<"For Fabricated inputs ***";
-	for (i=9809;i<=12393; i+=8){
-		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
+	for (i=21849;i<=25745; i+=8){
+		cout<<"\t"<<count<<" : "<<out[i]<<"\n";
+		count++;
 	}
+	cout<<"Number of Outputs : "<<count;
+	count=0;
 	cout<<"Half Adder Outputs";
-	for (i=12394;i<=13417;i++){
+	for (i=25746;i<=27795;i++){
 		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
 	}
 	cout<<"\nFull Adder Outputs";
-	for(i=13424;i<=25609;i+=8){
+	/*for(i=27803;i<=52265;i+=8){
 		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
 		cout<<"\t"<<i+1<<" : "<<out[i+1]<<"\n";
 	}
 	cout<<"Final Adder Output:";
-	for(i=25537;i<=25609;i+=8){
+	for(i=52177;i<=52265;i+=8){
 		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
 	}
-	cout<<"\t"<<"25608"<<" : "<<out[25608]<<"\n";
+	cout<<"\t"<<"52264"<<" : "<<out[52264]<<"\n";
 	//cout<<"\n\nOutput_file : "<<output<<"\n\n";
 	cout<<"less than t2 outputs :";
-	for (i=25610;i<=25630;i++)
+	for (i=52266;i<=52290;i++)
 		cout<<"\t"<<i<<" : "<<out[i]<<"\n";
 	
 	}
-
+	*/
 	delete io;
 	return 0;
 

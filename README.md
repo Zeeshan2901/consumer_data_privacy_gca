@@ -89,5 +89,17 @@ Go to `test/2pc_scal.cpp` and make the following change...
  
  ```
  cmake . && make && ./bin/2pc_scal 1 2 3 4 5
+ 
  ```
+
+Owen: I had some troubles with emp-ot and emp-ag2pc.  Cmake had generated
+makefiles that left out -lrelic
+
+I just went into the affected XYZ.dir directories (maybe 7)
+and manually hacked in -lrelic  ; of course this is not the right way
+to proceed, but it let me build the tools.
+
+Had to do the same thing in project's toplevel and edit
+CMakefiles/*.dir/link.txt
+
  

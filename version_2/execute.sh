@@ -30,9 +30,39 @@ java User1 & (sleep 0.02; java User2)
 echo "Executed"
 
 
-echo "Sleeping for 0.01 ms so that all previous executions are completed ports are unbinded"
+#echo "Sleeping for 5 ms so that all previous executions are completed ports are unbinded"
 sleep 5;
 
+
+# Creating the GC files for each runs iteration by reading inputs from "input/User1/GC_files.txt"
+
+
+GC_INPUT="input/User1/GC_files.txt"
+while IFS= read -r LINE
+do	
+	cd ..
+	pwd
+	echo "line : $LINE"
+	OLD_FILE="test/Frame_Match_V2.cpp"
+	GC_FILE="test/Frame_Match_"$LINE".cpp"
+	APPEND_STRING="const static int runs = "$LINE";"
+	echo "OL : $OLD_FILE"
+	echo "GC : $GC_FILE"
+	echo "AS : $APPEND_STRING"
+	echo "$APPEND_STRING" | cat - $OLD_FILE > temp && mv temp $GC_FILE
+	chmod 777 $GC_FILE
+	
+	TEST="add_test(Frame_Match_"$LINE")"
+	echo "TT : $TEST"
+	echo "$TEST" >> CMakeLists.txt
+
+	cd version_2/
+#add_test(Frame_Match_V2)
+done < "$GC_INPUT"
+
+cd ..
+make
+cd version_2/
 
 echo "Reading the list of files and executing GC"
 # Code to read and print contents of list file
@@ -42,26 +72,35 @@ shopt -s nullglob
 LIST_OF_FILES=(*)
 echo ${LIST_OF_FILES[*]}
 
+
+
 cd ../../..
 pwd
 i=0
 while [ $i -lt ${#LIST_OF_FILES[@]} ] 
 do
+	pwd
 	# To print index, ith element 
-	echo ${LIST_OF_FILES[$i]} 
-
+	echo "Line : ${LIST_OF_FILES[$i]}" 
+	CIR="$(cut -d'_' -f1 <<<"${LIST_OF_FILES[$i]}")"
+	
 	USER1_LOFILE=$PARENT$DIR_LOCATION$PARTY_1"/lof/"${LIST_OF_FILES[$i]}
 	USER2_LOFILE=$PARENT$DIR_LOCATION$PARTY_2"/lof/"${LIST_OF_FILES[$i]}
-	CIRCUIT_FILE=$PARENT$CIRCUIT_DIR${LIST_OF_FILES[$i]}
+	CIRCUIT_FILE=$PARENT$CIRCUIT_DIR$CIR".txt"
 	DIR=$PARENT$DIR_LOCATION
+	NUM_EXECS=$(< "$DIR_LOCATION$PARTY_1"/lof/"${LIST_OF_FILES[$i]}" wc -l)
 	#echo "CF :  $CIRCUIT_FILE"
 	#echo "UF :  $USER1_LOFILE"
 	#echo "UF :  $USER2_LOFILE"
 	#echo "DI :  $DIR"
-
+	
+	GC_FILE="bin/Frame_Match_"$NUM_EXECS
+	echo "GC $GC_FILE"
 	cd ..
+	pwd
 	#executing the Garbled Circuit Program in parallel
-	(sleep 0.10; bin/Frame_Match_V2 $PARTY_1 $PORT $DIR $USER1_LOFILE $CIRCUIT_FILE) & bin/Frame_Match_V2 $PARTY_2 $PORT $DIR $USER2_LOFILE $CIRCUIT_FILE
+	(sleep 0.10; $GC_FILE $PARTY_1 $PORT $DIR $USER1_LOFILE $CIRCUIT_FILE) & $GC_FILE $PARTY_2 $PORT $DIR $USER2_LOFILE $CIRCUIT_FILE
+	#echo "$GC_FILE $PARTY_1 $PORT $DIR $USER1_LOFILE $CIRCUIT_FILE"
 	sleep 1;
 	cd version_2/
 

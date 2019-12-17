@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +43,9 @@ public class User2 {
 	//Intermediate DS to store list of files & exclusion list
 	List<String> listOfFiles	= new ArrayList<>();
 	List<String> exclusionList	= new ArrayList<>();
+
+	//List of File with count of each size of genesize
+	int [][] lofCount;
 	
 	
 	public User2() {
@@ -64,6 +68,19 @@ public class User2 {
 		for (int i=1; i<=CHROMOSOME_COUNT; i++) {
 			genes[i]= new ArrayList<GenotypedData>();
 			readRejects[i]= new ArrayList<GenotypedData>();
+		}
+
+		lofCount = new int[50][3];
+		int exp=6;
+		for (int i=0; i<=9;i++){
+			lofCount[i][0]= (int) Math.pow(2,exp++);
+			lofCount[i][1]=0;
+			lofCount[i][2]=0;
+		}
+		for (int i=10; i<50;i++){
+			lofCount[i][0]=0;
+			lofCount[i][1]=0;
+			lofCount[i][2]=0;
 		}
 		
 		cM = new int[23][];
@@ -469,16 +486,63 @@ public class User2 {
 				clientOut.writeUTF(str);
 			Collections.sort(listOfFiles);
 			//Writing the contents of listofFiles list into a file
+			int threshold=0;
 			for (String str : listOfFiles){
 				String []arr = str.split("_");
 				int numgen=Integer.parseInt(arr[0]);
 				int lim=nextPowerOf2(numgen);
-				String filename="input/User2/lof/" + lim + ".txt";
-				FileWriter flist = new FileWriter(filename,true);
-				flist.write(str);
-				flist.write("\n");
-				flist.close();
+				if (lim <=2048)
+					threshold = 128;
+				else if (lim ==4096)
+					threshold = 64;
+				else threshold =4;
+
+				for (int i=0; i<lofCount.length; i++){
+					if (lofCount[i][0] == lim && lofCount[i][1]<threshold )  {
+						String filename="input/User2/lof/" + lim + "_" + lofCount[i][2] + ".txt";
+						FileWriter flist = new FileWriter(filename,true);
+						flist.write(str);
+						flist.write("\n");
+						flist.close();
+						lofCount[i][1]++;
+						break;
+					} 
+					else if (lofCount[i][0]==0) {
+						lofCount[i][0]=lim;
+						lofCount[i][1]++;
+						int counter=0;
+						for (int k=0; k<lofCount.length; k++)
+							if (lofCount[k][0]==lim)
+								counter++;
+						String filename="input/User2/lof/" + lim + "_" + (counter-1)+".txt";
+						FileWriter flist = new FileWriter(filename,true);
+						flist.write(str);
+						flist.write("\n");
+						flist.close();
+						lofCount[i][2]=counter-1;
+						break;
+						
+					}
+				}
 			}
+
+			//for (int i=0; i<lofCount.length;i++)
+				//System.out.println(lofCount[i][0] + " : "+ lofCount[i][1] + " : " + lofCount[i][2]);
+			//Finding the runs varaiable for GC program and writing in a file 
+			HashMap<Integer,Integer> hm = new HashMap<Integer,Integer>(); 
+			for (int i = 0; i < lofCount.length; i++)
+				hm.put(lofCount[i][1], i);
+			//System.out.println(hm.keySet());
+			FileWriter flist = new FileWriter("input/User2/GC_files.txt");
+			for (Map.Entry mapElement : hm.entrySet()) { 
+				int value = ((int)mapElement.getKey());
+				//System.out.println(" : " + value); 
+				if (value >0){
+					flist.write(String.valueOf(value));
+					flist.write("\n");
+				}
+			} 
+			flist.close();
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}

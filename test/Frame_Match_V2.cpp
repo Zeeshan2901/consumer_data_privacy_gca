@@ -1,3 +1,4 @@
+
 #include <emp-tool/emp-tool.h>
 #include "dependencies/emp-ag2pc/emp-ag2pc/amortized_2pc.h"
 
@@ -6,7 +7,27 @@ using namespace std;
 using namespace emp;
 
 
-const static int runs = 4000;
+/*int check(string lof){
+	int c=0;
+	ifstream r(lof);
+	string a;
+	if (r.is_open()){
+		while ( getline(r,a) )
+			c++;
+	}
+	r.close();
+	return c;
+}
+
+
+constexpr int h(string lof){
+	return check(lof);   
+}
+
+*/
+
+
+
 
 int main(int argc, char** argv) {
 
@@ -38,14 +59,7 @@ int main(int argc, char** argv) {
 	/*
 	* Finding number of runs for the AmortizedC2PC object
 	*/
-	int c=0;
-	ifstream r(lof);
-	string a;
-	if (r.is_open()){
-		while ( getline(r,a) )
-			c++;
-	}
-	r.close();
+	
 	
 	/*
 	* Calling necessary AG2PC Library functions
@@ -74,6 +88,8 @@ int main(int argc, char** argv) {
 	if (i1.is_open()){
 		while ( getline(i1,line) )
 		{
+			if (count == runs)
+				return 0;
 			//Variables to capture the frame attributes
 			string chromosome="",cm="",geneCount="";
 			string delimiter = "_";
@@ -94,8 +110,8 @@ int main(int argc, char** argv) {
 			}
 			cm=temp2;
 
-			/*cout<<"\nline		: "<<line;
-			cout<<"\ngeneCount	: "<<geneCount;
+			cout<<"\nline		: "<<line;
+			/*cout<<"\ngeneCount	: "<<geneCount;
 			cout<<"\nchromosome	: "<<chromosome;
 			cout<<"\nCM		: "<<cm;*/
 			string inputfile = file_dir + line + ".txt";

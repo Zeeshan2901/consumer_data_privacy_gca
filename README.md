@@ -61,37 +61,6 @@ cd emp-ag2pc && cmake . && make
 ```
 
 
-# Hack emp-ag2pc
-
-
-In the dependencies/emp-ag2pc/CMakeLists.txt file,  add the following line...
-
-```
-add_test (2pc_scal)
-```
-
-
-Go to `test/2pc_scal.cpp` and make the following change...
-
-
-```
-+++ b/test/2pc_scal.cpp
-@@ -1,5 +1,5 @@
- #include <emp-tool/emp-tool.h>
--#include "2pc.h"
-+#include "../emp-ag2pc/2pc.h"
- using namespace std;
- using namespace emp;
- ```
- 
- 
- Then while in the `dependencies/emp-ag2pc` directory...
- 
- ```
- cmake . && make && ./bin/2pc_scal 1 2 3 4 5
- 
- ```
-
 Owen: I had some troubles with emp-ot and emp-ag2pc.  Cmake had generated
 makefiles that left out -lrelic
 

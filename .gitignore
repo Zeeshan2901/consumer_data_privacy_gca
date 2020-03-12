@@ -36,3 +36,6 @@ cmake_install.cmake
 
 perf.data*
 
+# input files
+src/input
+version_2/input

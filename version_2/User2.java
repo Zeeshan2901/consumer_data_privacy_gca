@@ -178,56 +178,98 @@ public class User2 {
 			}	 
 	}
 
-	public void csvParser(String location) throws IOException{		
+	public void csvParser(String location) throws IOException{
+		
 		String s="";
 		FileReader fr = new FileReader(location);
 		BufferedReader bf = new BufferedReader(fr);
+		int flag=0;
+		char delim='a';
+		//System.out.println("-----------------------Inside Client");
 		while ( (s= bf.readLine()) != null) {
-        	GenotypedData obj =new GenotypedData();
-        	int index = 0;
-            	int len = s.length();
-            	for(; (index  < len) && (s.charAt(index) != '\t'); index++) {}
-            	obj.rsid= s.substring(0, index);
-            	index++;
-            	char c;
-            	c = s.charAt(index);
-            	int chromosome = c & 0xF;
-            	index++;
-            	c = s.charAt(index);
-            	if(c != '\t') {
-            	chromosome = (chromosome << 3) + (chromosome << 1) + (c & 0xF);
-                index++;
-            }
-            if((chromosome > CHROMOSOME_COUNT) || (chromosome <=0)) {
-            	bf.close();
-            	return;
-            }
-            index++;           
-            int loc = 0;
-            for(;index  < len; index++) {
-                c = s.charAt(index);
-                if(c != '\t') {
-                	loc = (loc << 3) + (loc << 1) + (c & 0xF);
-                } else {
-                    break;
-                }
-            }
-            obj.location=loc;
-            //index++;
-            obj.gene1=s.charAt(len-2);
-            obj.gene2=s.charAt(len-1);
-            
-            if (isPermissible(obj.gene1,obj.gene2) ) {
-            	ArrayList <GenotypedData> gen =  genes[chromosome];
-            	gen.add(obj);
-            }
-            else {
-            	ArrayList <GenotypedData> gen =  readRejects[chromosome];
-            	gen.add(obj);
-            }	
+			//System.out.println(s + "\t\t\t"+ flag);
+			s=s.replaceAll("\"", "");
+			if (flag==0 && s.length() > 3 && s.substring(0, 2).contentEquals("rs") && s.substring(2,5).matches("-?\\d+")) { 
+				char [] line = s.toCharArray();
+				//System.out.println(s + "\t\t\t");
+				for (char c : line) {
+					if (!Character.isDigit(c) && !Character.isLetter(c)) {
+						delim=c;
+						flag =1;
+						break;
+					}	
+				}			
+			}
+			if (flag ==1) {
+				//System.out.println(s + "\t\t\t"+ flag);
+	        	GenotypedData obj =new GenotypedData();
+	        	int index = 0;
+	            int len = s.length();
+	            
+	            for(; (index  < len) && (s.charAt(index) != delim); index++) {}
+	            obj.rsid= s.substring(0, index);
+	            
+	            index++;
+	            
+	            char c;
+	            c = s.charAt(index);
+	            if (c=='X'||c=='M'){
+	            	bf.close();
+	        		IntStream.range(1,CHROMOSOME_COUNT+1).parallel().forEach(x -> Collections.sort(genes[x]));
+	        		return;
+	            }
+	            int chromosome = c & 0xF;
+	            index++;
+	            c = s.charAt(index);
+	            if(c != delim) {
+	            	chromosome = (chromosome << 3) + (chromosome << 1) + (c & 0xF);
+	                index++;
+	            }
+	             
+	            index++;
+	            
+	            int loc = 0;
+	            for(;index  < len; index++) {
+	                c = s.charAt(index);
+	                if(c != delim) {
+	                	loc = (loc << 3) + (loc << 1) + (c & 0xF);
+	                } else {
+	                    break;
+	                }
+	            }
+	            obj.location=loc;
+	
+	            index++;
+
+	            if (s.charAt(index)==delim) 
+	            	obj.gene1=s.charAt(index+1);
+	            else 
+	            	obj.gene1=s.charAt(index);
+	            
+	            index++;
+	            
+	            
+	            if (s.charAt(index)==delim) 
+	            	obj.gene2=s.charAt(index+1);
+	            else 
+	            	obj.gene2=s.charAt(index);
+
+	            
+	            if (isPermissible(obj.gene1,obj.gene2) && chromosome <= CHROMOSOME_COUNT && chromosome > 0) {
+	            	ArrayList <GenotypedData> gen =  genes[chromosome];
+	            	gen.add(obj);
+	            }
+	            else 
+	            	if (chromosome <= CHROMOSOME_COUNT && chromosome > 0) {
+	            		ArrayList <GenotypedData> gen =  readRejects[chromosome];
+	            		gen.add(obj);
+	            	}
+	            
+			}
+        	
         }
-		bf.close();
-		IntStream.range(1,CHROMOSOME_COUNT).parallel().forEach(x -> Collections.sort(genes[x]));
+		bf.close();	        		
+		IntStream.range(1,CHROMOSOME_COUNT+1).parallel().forEach(x -> Collections.sort(genes[x]));
 	}
 	
 	// Verify if the alleles are in "A,C,G,T" or not
@@ -249,101 +291,158 @@ public class User2 {
 		//Block to find common snips
 		//Client receives and sends all the snips from Server
 		try {
-			String line="",locs="",finalChromosomeLocation="";
+			//for (int i=1; i<=CHROMOSOME_COUNT;i++)
+				//homozygotess+=genes[i].size();
+			String line="",locs="",rsids="",finalChromosomeLocation="",finalChromosomeRsid="";
 			int chromosome=1;
 			while(!line.equals("over")) {
 				line=clientIn.readUTF();
 				if (line.contentEquals("continue")) {
 						chromosome=clientIn.read();
 						locs=clientIn.readUTF();
+						rsids=clientIn.readUTF();
 						finalChromosomeLocation += locs;
+						finalChromosomeRsid += rsids;
 						clientOut.writeUTF("done");
 				}
 				if (line.contentEquals("last")) {
 						chromosome=clientIn.read();
 						locs=clientIn.readUTF();
-						System.out.println("Received Data for Chromosome :" +chromosome);
+						rsids=clientIn.readUTF();
+						//System.out.println("Received Data for Chromosome :" +chromosome);
 						finalChromosomeLocation += locs;
-						List<Integer> received=removeLocations(chromosome,finalChromosomeLocation);
+						finalChromosomeRsid += rsids;
+						removeLocations(chromosome,finalChromosomeLocation,finalChromosomeRsid);
+						//System.out.println("Sending Data for Chromosome : " +chromosome + " size :  "+genes[chromosome].size());
+						
 						clientOut.writeUTF("done");
-						finalChromosomeLocation="";			
+						finalChromosomeLocation="";	
+						finalChromosomeRsid="";
 						//Sending chunks to Server
 						//System.out.println("Received Size :" +received.length);
-						String temp="";
-						for (int i=0;i<received.size();i++) {
-							temp+=received.get(i) + " ";
+						StringBuilder locs1 = new StringBuilder("");
+						StringBuilder rsids1 = new StringBuilder("");
+						//System.out.println("Sending Data for Chromosome : " +chromosome + " size :  "+genes[chromosome].size());
+						for (int i=0;i<genes[chromosome].size();i++) {
+							GenotypedData obj = genes[chromosome].get(i);
+							locs1.append(obj.getLocation());
+							rsids1.append(obj.getRSID());
+							locs1.append(" ");
+							rsids1.append(" ");
 							if (i%5000==0 && i >0) {
 								clientOut.writeUTF("continue");
-								clientOut.writeUTF(temp);
-								temp="";
+								clientOut.writeUTF(locs1.toString());
+								clientOut.writeUTF(rsids1.toString());
+								//System.out.println("locs1 : "+locs1);
+								//System.out.println("rsids : "+rsids1);
+								locs1.delete(0, locs1.length());
+								rsids1.delete(0, rsids1.length());
 							}
 						}
 						clientOut.writeUTF("last");
-						clientOut.writeUTF(temp);
+						clientOut.writeUTF(locs1.toString());
+						clientOut.writeUTF(rsids1.toString());
+						//System.out.println("locs1 : "+locs1);
+						//System.out.println("rsids : "+rsids1);
 						clientOut.writeUTF("complete");
 						clientIn.readUTF();
-						System.out.println("Sent Data for Chromosome :" +chromosome);
+						//System.out.println("Sent Data for Chromosome :" +chromosome);
 				}
 				if (line.contentEquals("over")) {
 					clientOut.writeUTF("done");
 			        break;
 				}
 			}
+			//for (int i=1; i<=CHROMOSOME_COUNT;i++)
+				//commonSnips+=genes[i].size();
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 	    }   
 	}
 	
 	//Method to find common SNIPS
-	public List<Integer> removeLocations(int chromosome, String locs) {
-		int i=0,j=0;
+	public void removeLocations(int chromosome, String locs, String rsids) {
+	
+	int i=0,j=0;
+	
+	//Splitting the string of locations, rsids into Array of Locations and RSIDs
+	String[] temp = locs.split(" ");	
+	String[] temp1 = rsids.split(" ");
+	
+	//Transforming array of locations to into a lists of location, rsid
+	List<Integer> pLocs = new ArrayList<>();
+	List<String> pRsids = new ArrayList<>();
+	for( i = 0; i < temp.length && i<temp1.length; i++) { 
+		if (!temp[i].matches("-?\\d+") || !temp1[i].matches("^[a-zA-Z0-9]*$"))
+			System.out.println(chromosome +" , "+temp[i] + " , " + temp1[i]);
+		else {
+			pLocs.add ( Integer.parseInt(temp[i]));
+			pRsids.add(temp1[i]);
+		}
+	}
+	//System.out.println("Initial  size	: "+ genes[chromosome].size());
+	//System.out.println("Received size	: "+ pLocs.size() + "  " + pRsids.size() );
+	
+	
+	i=0;
+	//Iterating through party's location list and current location list to find common locations
+	//and removing unwanted locations
+	while(i<pLocs.size() && i <pRsids.size() && j< genes[chromosome].size() ) {
+		GenotypedData obj = (GenotypedData) genes[chromosome].get(j);
+		int partyLoc = pLocs.get(i);
+		String partyRsid = pRsids.get(i);
+		//System.out.println(i+" "+j);
 		
-		//Splitting the string of locations into Array of Locations
-		String[] temp = locs.split(" ");	
-		//Transforming array of locations to into a list of location
-		List<Integer> party = new ArrayList<>();
-		for( i = 0; i < temp.length; i++) 
-			party.add ( Integer.parseInt(temp[i]));
-		System.out.println("Initial  size	: "+ genes[chromosome].size());
-		System.out.println("Received size	: "+ party.size());
-		
-		
-		i=0;
-		//Iterating through party's location list and current location list to find common locations
-		//and removing unwanted locations
-		while(i<party.size() && j< genes[chromosome].size()) {
-			GenotypedData obj = (GenotypedData) genes[chromosome].get(j);
-			int partyLoc=party.get(i);
-			if (partyLoc < obj.getLocation()) 
-				party.remove(i);
-			
-			else if (partyLoc > obj.getLocation())
-				genes[chromosome].remove(j);
-			
-			else if (partyLoc == obj.getLocation()) {
+		//System.out.println("L : "+ partyLoc +" || "+ partyRsid  + " size : "+ pLocs.size() + " || gene " + genes[chromosome].size() );
+		//obj.display(obj);
+		if (partyRsid.contentEquals(obj.getRSID())) {
+			if (partyLoc == obj.getLocation()) {
+				i++;
+				j++;
+			}
+			else if (partyLoc != obj.getLocation()) {
+				obj.location=partyLoc;
 				i++;
 				j++;
 			}
 		}
 		
-		//resizing the data structures
-		if (party.size() > genes[chromosome].size())
-			party.subList(genes[chromosome].size(), party.size()).clear(); 
-		else if (genes[chromosome].size() > party.size()) 
-			genes[chromosome].subList(party.size(),genes[chromosome].size()).clear();
-		
-		
-		//looking for mismatches if any 
-		int mismatches=0;
-		for (i=0;i<party.size();i++) {
-			GenotypedData cur = (GenotypedData) genes[chromosome].get(i);
-			if (cur.location != party.get(i)) {
-				mismatches++;
+		if (! partyRsid.contentEquals(obj.getRSID())) {
+			if (partyLoc < obj.getLocation()) {
+				pLocs.remove(i);
+				pRsids.remove(i);
 			}
+			else if (partyLoc > obj.getLocation())
+				genes[chromosome].remove(j);
+			else if (partyLoc == obj.getLocation()) {
+				genes[chromosome].remove(j);
+				pLocs.remove(i);
+				pRsids.remove(i);
+			}
+				
 		}
-		System.out.println("Final    size	: " + genes[chromosome].size());
-		System.out.println("Mismatches in Chromosome  "+ chromosome+ " are "+mismatches);
-		return party;
+
+	}
+	
+	//resizing the data structures
+	if (pLocs.size() > genes[chromosome].size() && pRsids.size() > genes[chromosome].size()) {
+		pLocs.subList(genes[chromosome].size(), pLocs.size()).clear(); 
+		pRsids.subList(genes[chromosome].size(), pRsids.size()).clear(); 
+	}
+	else if (genes[chromosome].size() > pLocs.size() && genes[chromosome].size() > pRsids.size()) 
+		genes[chromosome].subList(pRsids.size(),genes[chromosome].size()).clear();
+	
+	
+	//looking for mismatches if any 
+	int mismatches=0;
+	for (i=0;i<pRsids.size() && i <pLocs.size();i++) {
+		GenotypedData cur = (GenotypedData) genes[chromosome].get(i);
+		if (cur.location != pLocs.get(i) && cur.rsid.contentEquals(pRsids.get(i))) {
+			mismatches++;
+		}
+	}
+	//System.out.println("Final    size	: " + genes[chromosome].size());
+	//System.out.println("Mismatches in Chromosome  "+ chromosome+ " are "+mismatches);		
 	}
 	
 	//Method to divide the dataset into frames

@@ -47,7 +47,7 @@ do
 		
 		cd ..				#moving to the directory for Garbled Circuit program execution
 		#executing the Garbled Circuit Program in parallel
-		(sleep 0.05; bin/Frame_Match $PARTY_1 $PORT $LOC_1 $INPUT_FILE $CIRCUIT) & bin/Frame_Match $PARTY_2 $PORT $LOC_2 $INPUT_FILE $CIRCUIT
+		#(sleep 0.05; bin/Frame_Match $PARTY_1 $PORT $LOC_1 $INPUT_FILE $CIRCUIT) & bin/Frame_Match $PARTY_2 $PORT $LOC_2 $INPUT_FILE $CIRCUIT
 		cd src				#moving back to the execution directory
 	fi
 done < "$input"

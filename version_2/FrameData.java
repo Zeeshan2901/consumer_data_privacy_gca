@@ -1,41 +1,20 @@
 public class FrameData implements Comparable <FrameData> {
 	
-	int start,end,cmStart,cmEnd;
-	String startRSID,endRSID;
-	String evenHashValue, oddHashValue;
-	boolean sent;
+	int start,end, geneCount, paddedCount;
 	boolean match;
 	
-	public FrameData(int st, String stRsid, int en, String enRsid, String ehash, String ohash, int cms, int cme) {
+	public FrameData(int st, int gc, boolean mt) {
 		start=st;
-		startRSID=stRsid;
-		end=en;
-		endRSID=enRsid;
-		evenHashValue=ehash;
-		oddHashValue=ohash;
-		cmStart=cms;
-		cmEnd=cme;
-		sent=false;
-		match=false;
-	}
-	
-	public FrameData(FrameData obj) {
-		this.end=obj.end;
-		this.start=obj.start;
-		this.startRSID=obj.startRSID;
-		this.endRSID=obj.endRSID;
-		this.evenHashValue=obj.evenHashValue;
-		this.oddHashValue=obj.oddHashValue;
-		this.sent=false;
-		this.match=false;
+		geneCount=gc;
+		end=start+5;
+		match=mt;
+		paddedCount=nextPowerOf2(gc)-geneCount;
 	}
 	
 	
 	public void display(FrameData ob, int chromo) {
-		System.out.println("\n Chromosome : "+chromo+" || Start :" +ob.start+" || StartRSID : "+ob.startRSID+" "
-				+ "|| End : "+ob.end+" || EndRSID : "+ob.endRSID+ " || CM_Start : " +ob.cmStart + " || CM_End : "+ob.cmEnd+
-				" || HashValues : "+ob.evenHashValue+" || "
-				+ob.oddHashValue + " || Sent : "+ob.sent+" || Match : "+ob.match);
+		System.out.println("\n Chromosome : "+chromo+" || Start : " +ob.start+ " || End : "+ob.end+ " || Match : "+ob.match
+					+ " || GeneCount : " + ob.geneCount + " || PaddedCount : " + ob.paddedCount);
 	}
 	
 	public int compareTo(FrameData fd) {
@@ -45,6 +24,17 @@ public class FrameData implements Comparable <FrameData> {
 			return 1;
 		else 
 			return -1;
+	}
+
+	public static int nextPowerOf2 (int num) {
+		
+		if (num <= 0 || num > 65536)
+			return -1;
+		if (num > 0 && ((num & (num - 1)) == 0))
+			return num;
+		else 
+			return (int) Math.pow(2, (int) ( (Math.log(num) / Math.log(2)) + 1));
+			
 	}
 
 }

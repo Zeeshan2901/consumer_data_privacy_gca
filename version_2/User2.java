@@ -48,7 +48,7 @@ public class User2 {
 	int [][] lofCount;
 	
 	
-	public User2() {
+	public User2(String loc) {
 		// TODO Auto-generated constructor stub
 		clientAddress="127.0.0.1"; 
 		port=12345;
@@ -58,8 +58,9 @@ public class User2 {
 		genes  = new ArrayList[CHROMOSOME_COUNT+1]; 
 		readRejects = new ArrayList[CHROMOSOME_COUNT+1];
 	
-		location="input/dad_all.txt";
-		
+		//location="input/dad_all.txt";
+		location=loc;
+
 		chars.add('A');
 		chars.add('C');
 		chars.add('G');
@@ -113,17 +114,31 @@ public class User2 {
 	
 	//Executioner Method
 	public void executeComms() throws IOException {
-		//Block to establish the connection 
 		try{ 
 			socket = new Socket(clientAddress, port); 
 			System.out.println("Connected"); 
 			System.out.println("Connection established with Server ");
 			System.out.println("Just connected to " + socket.getRemoteSocketAddress()); 
-	        } catch(UnknownHostException u) { 
-        	    System.out.println(u); 
-	        } catch(IOException i){ 
-        		System.out.println(i); 
-        	}
+		} catch(UnknownHostException u) { 
+			System.out.println(u); 
+		} catch(IOException i){ 
+        		System.out.println("Exception at Client : "+i); 
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        		try{ 
+    				socket = new Socket(clientAddress, port); 
+    				System.out.println("Connected"); 
+    				System.out.println("Connection established with Server ");
+    				System.out.println("Just connected to " + socket.getRemoteSocketAddress()); 
+ 			} catch(UnknownHostException u) { 
+				System.out.println(u); 
+			} catch(IOException x){ 
+            			System.out.println("Exception at Client : "+x); 
+			}
+		}
 		
         	//block to create input, output objects
   		try {
@@ -658,7 +673,7 @@ public class User2 {
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		User2 client = new User2();		
+		User2 client = new User2(args[0]);		
 		client.executeComms();
 	}
 

@@ -3,32 +3,8 @@ const static int runs = 64;
 #include <emp-tool/emp-tool.h>
 #include "dependencies/emp-ag2pc/emp-ag2pc/amortized_2pc.h"
 
-
 using namespace std;
 using namespace emp;
-
-
-/*int check(string lof){
-	int c=0;
-	ifstream r(lof);
-	string a;
-	if (r.is_open()){
-		while ( getline(r,a) )
-			c++;
-	}
-	r.close();
-	return c;
-}
-
-
-constexpr int h(string lof){
-	return check(lof);   
-}
-
-*/
-
-
-
 
 int main(int argc, char** argv) {
 
@@ -42,6 +18,7 @@ int main(int argc, char** argv) {
 	cout<<"\nDIR : "<<dir;
 	cout<<"\nLOF : "<<lof;
 	cout<<"\nCIR : "<<circuit;
+
 	/*
 	* Create the networking connection between users 
 	*/
@@ -51,15 +28,11 @@ int main(int argc, char** argv) {
 	NetIO* io = new NetIO(party==ALICE ? nullptr:IP, port);
 	io->set_nodelay();
 	string file_dir = dir + to_string(party) + "/";
+
 	/*
 	* Creating CircuitFile obj with our custom circuit
 	*/	
 	CircuitFile cf(circuit.c_str());
-
-
-	/*
-	* Finding number of runs for the AmortizedC2PC object
-	*/
 	
 	
 	/*
@@ -111,8 +84,8 @@ int main(int argc, char** argv) {
 			}
 			cm=temp2;
 
-			cout<<"\nline		: "<<line;
-			/*cout<<"\ngeneCount	: "<<geneCount;
+			/*cout<<"\nline		: "<<line;
+			cout<<"\ngeneCount	: "<<geneCount;
 			cout<<"\nchromosome	: "<<chromosome;
 			cout<<"\nCM		: "<<cm;*/
 			string inputfile = file_dir + line + ".txt";
@@ -133,13 +106,13 @@ int main(int argc, char** argv) {
 			if (party==2 && out[0]==1 ){
 				ofstream writeFile; 
 				writeFile.open("version_2/matching_results.txt" , std::ios_base::app);
-				writeFile <<"Chr : "<<chromosome<<" || GC : "<<geneCount<<" || CM : "<<cm <<" is a Match\n";
+				writeFile <<chromosome<<","<<geneCount<<","<<cm <<",true\n";
 				writeFile.close();
-				cout<<"Chr : "<<chromosome<<" || GC : "<<geneCount<<" || CM : "<<cm <<" is a Match\n";
+				//cout<<"Chr : "<<chromosome<<" || GC : "<<geneCount<<" || CM : "<<cm <<" is a Match\n";
 			}else if (party == 2 && out[0]==0){
 				ofstream writeFile; 
 				writeFile.open("version_2/matching_results.txt" , std::ios_base::app);
-				writeFile <<"Chr : "<<chromosome<<" || GC : "<<geneCount<<" || CM : "<<cm <<" is a Nopes\n";
+				writeFile <<chromosome<<","<<geneCount<<","<<cm <<",false\n";
 				writeFile.close();
 				cout<<"Chr : "<<chromosome<<" || GC : "<<geneCount<<" || CM : "<<cm <<" is a Nopes\n";
 			}

@@ -8,6 +8,13 @@ PATH_1="$DIR_LOCATION$PARTY_1/$USER1_LIST_FILE"
 PATH_2="$DIR_LOCATION$PARTY_2/$USER2_LIST_FILE"
 LOC_1="$DIR_LOCATION$PARTY_1/"
 LOC_2="$DIR_LOCATION$PARTY_2/" 
+MATCH_RESULTS_FILE="$MATCH"
+
+###############Reading Command Line Arguments
+FIRST_USER=$1
+SECOND_USER=$2
+
+
 
 echo "Removing all existing user files from the previous runs"
 ###############Removing all existing user files from the previous runs
@@ -20,18 +27,34 @@ echo "Removed"
 
 echo "Compiling JAVA programs"
 ###############Compiling JAVA programs
+javac GenotypedData.java
+javac FrameData.java
 javac User1.java
 javac User2.java
+javac User1_Comms.java
+javac User2_Comms.java
 echo "Compiled"
+
+
+START_JAVA=$(date +%s.%N)			#Capturing start of Java Execution
 
 echo "Executing JAVA Programs in parallel"
 ###############Executing JAVA Programs in parallel
-java User1 & (sleep 0.02; java User2)
+java User1 $FIRST_USER & (sleep .5; java User2 $SECOND_USER)
 echo "Executed"
+
+END_JAVA=$(date +%s.%N)				#Capturing end of Java Execution
 
 
 ###############echo "Sleeping for 5 ms so that all previous executions are completed ports are unbinded"
 sleep 5;
+
+
+
+###############Removing unnecessary test file from CMakeLists.txt
+cd ..
+sed -e "/add_test(Frame_Match_/d" -i CMakeLists.txt
+cd  version_2
 
 
 ############### Creating the GC files for each runs iteration by reading inputs from "input/User1/GC_files.txt"
@@ -75,6 +98,8 @@ LIST_OF_FILES=(*)
 
 
 
+START_GC=$(date +%s.%N)				#Capturing start of Garbled Circuit Execution
+
 cd ../../..
 pwd
 i=0
@@ -110,10 +135,25 @@ do
 	i=`expr $i + 1` 
 done
 
+END_GC=$(date +%s.%N)				#Capturing end of Garbled Circuit Execution 
+
+
+JAVA_EXEC=`printf "%.3f" $(echo "$END_JAVA - $START_JAVA" | bc)`
+GC_EXEC=`printf "%.3f" $(echo "$END_GC - $START_GC" | bc)`
+
+
+
+echo "Executing JAVA Programs in parallel"
+###############Executing JAVA Programs in parallel
+java User1_Comms $FIRST_USER $SECOND_USER $JAVA_EXEC $GC_EXEC & (sleep .5; java User2_Comms $MATCH_RESULTS_FILE )
+echo "Executed"
+
 
 echo "Program Completed"
 
 echo "Total Frames	: `wc -l matching_results.txt`"
-echo "Matches		: `grep -wc "Match" matching_results.txt`"
+echo "Matches		: `grep -wc "true" matching_results.txt`"
+
+sleep 5
 
 

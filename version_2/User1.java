@@ -49,11 +49,11 @@ public class User1 {
 	int [][] lofCount;
 
 	
-	public User1() {
+	public User1(String loc) {
 		// TODO Auto-generated constructor stub
 		port = 12345;
-		location="input/sister_all.txt";
-
+		//location="input/sister_all.txt";
+		location = loc;
 		overlap=5;
 		
 		genes			= new ArrayList[CHROMOSOME_COUNT+1];
@@ -659,7 +659,7 @@ public class User1 {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		User1 server = new User1();		
+		User1 server = new User1(args[0]);		
 		server.executeComms();
 	}
 

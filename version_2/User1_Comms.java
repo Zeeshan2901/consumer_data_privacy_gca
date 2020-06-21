@@ -27,11 +27,12 @@ public class User1_Comms {
 
 	String user1,user2;
 	double java_time,gc_time;
+	int user1Snips, user2Snips;
 
-	public User1_Comms(String u1, String u2, String jv, String gc) {
+	public User1_Comms(String u1, String u2, String jv, String gc, String u1s, String u2s ) {
 		// TODO Auto-generated constructor stub
 		port = 12345;
-		test_file="case3.csv";
+		test_file="case5.csv";
 		frames	= new ArrayList[CHROMOSOME_COUNT+1];
 		for (int i = 1; i <= CHROMOSOME_COUNT; i++) 
 			frames[i]= new ArrayList<FrameData>();
@@ -40,6 +41,8 @@ public class User1_Comms {
 		user2=u2.substring(u2.length()-6, u2.length()).replaceAll("[^0-9]","");
 		java_time=Double.parseDouble(String.format("%.3f", Double.parseDouble(jv))) ;
 		gc_time=Double.parseDouble(String.format("%.3f", Double.parseDouble(gc))) ;
+		user1Snips=Integer.parseInt(u1s);
+		user2Snips=Integer.parseInt(u2s);
 	}
 
 	//Executioner Method
@@ -100,7 +103,7 @@ public class User1_Comms {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		User1_Comms client = new User1_Comms( args[0], args[1], args[2], args[3]);		
+		User1_Comms client = new User1_Comms( args[0], args[1], args[2], args[3], args[4], args[5]);		
 		client.executeComms();
 	}
 
@@ -118,6 +121,8 @@ public class User1_Comms {
 		int matchcM=0;
 		int totalcM=0;
 		int mathingSegments=0;
+		int common_snips=0;
+		int padded_snips=0;
 			
 		for (int i=1;i<=CHROMOSOME_COUNT;i++) {
 			int matchFrame=0;			//Number of matching Frames
@@ -131,7 +136,10 @@ public class User1_Comms {
 			int currentChromosomeTotalFrames = frames[i].size();
 			for (int j=0;j<currentChromosomeTotalFrames;j++) {
 				FrameData obj = frames[i].get(j);
-				 
+				if (j==0 || j%5==0){
+					common_snips+=obj.geneCount;
+					padded_snips+=obj.paddedCount;
+				}
 				if (startOfCM==0 && endOfCm==0) {
 					startOfCM=obj.start;
 					endOfCm=obj.end;
@@ -230,7 +238,8 @@ public class User1_Comms {
 		int id=findLastline(test_file);
 		String appString = id + "," + user1 + "," + user2 + "," + 
 				totalFrames + "," + matchFrames + "," + totalcM + "," + matchcM + "," + mathingSegments + "," +
-				java_time + "," + gc_time + "," + (java_time+gc_time);
+				java_time + "," + gc_time + "," + (java_time+gc_time) + "," + user1Snips + "," + user2Snips + "," +
+				common_snips + "," + padded_snips;
 		append(test_file,appString);
 	}
 
@@ -267,6 +276,16 @@ public class User1_Comms {
 		}
 	}
 	
+	public static int nextPowerOf2 (int num) {
+		
+		if (num <= 0 || num > 65536)
+			return -1;
+		if (num > 0 && ((num & (num - 1)) == 0))
+			return num;
+		else 
+			return (int) Math.pow(2, (int) ( (Math.log(num) / Math.log(2)) + 1));
+			
+	}
 
 
 

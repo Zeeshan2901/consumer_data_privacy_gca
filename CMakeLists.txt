@@ -25,8 +25,9 @@ endmacro()
 
 
 add_test(Frame_Match_128)
-add_test(Frame_Match_16)
 add_test(Frame_Match_1)
-add_test(Frame_Match_3)
-add_test(Frame_Match_4)
-add_test(Frame_Match_72)
+add_test(Frame_Match_82)
+add_test(Frame_Match_5)
+add_test(Frame_Match_7)
+add_test(Frame_Match_106)
+add_test(Frame_Match_13)

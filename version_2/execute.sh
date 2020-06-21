@@ -22,6 +22,7 @@ rm $LOC_1*
 rm $LOC_2*
 rm input/User1/lof/*
 rm input/User2/lof/*
+rm *.class
 >matching_results.txt
 echo "Removed"
 
@@ -64,7 +65,7 @@ GC_INPUT="input/User1/GC_files.txt"
 while IFS= read -r LINE
 do	
 	cd ..
-	pwd
+	#pwd
 	#echo "line : $LINE"
 	OLD_FILE="test/Frame_Match_V2.cpp"			#This is the base program
 	GC_FILE="test/Frame_Match_"$LINE".cpp"			#Generated program with const static int runs value
@@ -141,11 +142,13 @@ END_GC=$(date +%s.%N)				#Capturing end of Garbled Circuit Execution
 JAVA_EXEC=`printf "%.3f" $(echo "$END_JAVA - $START_JAVA" | bc)`
 GC_EXEC=`printf "%.3f" $(echo "$END_GC - $START_GC" | bc)`
 
+SNIP1=$(wc -l < $FIRST_USER )
+SNIP2=$(wc -l < $SECOND_USER)
 
 
 echo "Executing JAVA Programs in parallel"
 ###############Executing JAVA Programs in parallel
-java User1_Comms $FIRST_USER $SECOND_USER $JAVA_EXEC $GC_EXEC & (sleep .5; java User2_Comms $MATCH_RESULTS_FILE )
+java User1_Comms $FIRST_USER $SECOND_USER $JAVA_EXEC $GC_EXEC $SNIP1 $SNIP2 & (sleep .5; java User2_Comms $MATCH_RESULTS_FILE )
 echo "Executed"
 
 

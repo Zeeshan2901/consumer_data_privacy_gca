@@ -15,9 +15,6 @@ int main(int argc, char** argv) {
 	string lof(argv[4]);				//128.txt or 256.txt , etc.
 	string circuit(argv[5]);			//version_2/circuit/512.txt or 2048.txt , etc.
 	
-	cout<<"\nDIR : "<<dir;
-	cout<<"\nLOF : "<<lof;
-	cout<<"\nCIR : "<<circuit;
 
 	/*
 	* Create the networking connection between users 
@@ -34,6 +31,13 @@ int main(int argc, char** argv) {
 	*/	
 	CircuitFile cf(circuit.c_str());
 	
+
+	if (party==2){
+		cout<<"\nDIR : "<<dir;
+		cout<<"\nLOF : "<<lof;
+		cout<<"\nCIR : "<<circuit;
+		cout<<"\nRUN : "<<runs;
+	}
 	
 	/*
 	* Calling necessary AG2PC Library functions
@@ -114,7 +118,7 @@ int main(int argc, char** argv) {
 				writeFile.open("version_2/matching_results.txt" , std::ios_base::app);
 				writeFile <<chromosome<<","<<geneCount<<","<<cm <<",false\n";
 				writeFile.close();
-				cout<<"Chr : "<<chromosome<<" || GC : "<<geneCount<<" || CM : "<<cm <<" is a Nopes\n";
+				//cout<<"Chr : "<<chromosome<<" || GC : "<<geneCount<<" || CM : "<<cm <<" is a Nopes\n";
 			}
 			//sleep (10);
 					
